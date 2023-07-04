@@ -12,6 +12,18 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+string getTime()
+{
+    std::array<char, 64> buffer;
+     buffer.fill(0);
+     time_t rawtime;
+     time(&rawtime);
+     const auto timeinfo = localtime(&rawtime);
+     strftime(buffer.data(), sizeof(buffer), "%H-%M-%S", timeinfo);
+     std::string timeStr(buffer.data());
+    return timeStr;
+}
+
 void doShadowRemove(string fileName, string out_fileName)
 {
     Mat img = imread(fileName);
@@ -30,10 +42,10 @@ int main(int argc, char** argv)
 
     for (const auto & entry : fs::directory_iterator(path)) {
         std::cout << entry.path() << std::endl;
-        doShadowRemove(entry.path(), outPath + "" + (string)entry.path().filename() );
+        doShadowRemove(entry.path(), outPath + getTime() + "_" + (string)entry.path().filename() );
     }
     
-    printf("done!");
+    printf("done!\n");
     //getchar();
     //waitKey(0);
 	return 0;
